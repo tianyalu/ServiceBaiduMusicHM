@@ -9,4 +9,6 @@ public interface IService {
     void callPlayMusic();
     void callStopMusic();
     void callReplayMusic();
+
+    void callSeekToPosition(int position);
 }

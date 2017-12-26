@@ -27,4 +27,10 @@
         android:layout_marginTop="16dp"
         android:text="继续播放" />
 
+    <SeekBar
+        android:id="@+id/sb_seek_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"/>
+
 </LinearLayout>

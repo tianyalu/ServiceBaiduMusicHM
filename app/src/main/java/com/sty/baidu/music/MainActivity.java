@@ -3,11 +3,14 @@ package com.sty.baidu.music;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.os.IBinder;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.SeekBar;
 
 import com.sty.baidu.music.service.IService;
 import com.sty.baidu.music.service.MusicService;
@@ -23,9 +26,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btnPlay;
     private Button btnStop;
     private Button btnReplay;
+    private static SeekBar sbSeekBar;
 
     private IService iService; //定义的中间人对象
     private MyConn conn;
+
+    public static Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            //(1)获取msg携带的数据
+            Bundle data = msg.getData();
+            //(2)获取当前进度和总进度
+            int duration = data.getInt("duration");
+            int currentPosition = data.getInt("currentPosition");
+            //(3)设置seekBar的最大进度和当前进度
+            sbSeekBar.setMax(duration);
+            sbSeekBar.setProgress(currentPosition);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +73,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnPlay = (Button) findViewById(R.id.btn_play);
         btnStop = (Button) findViewById(R.id.btn_stop);
         btnReplay = (Button) findViewById(R.id.btn_replay);
+        sbSeekBar = (SeekBar) findViewById(R.id.sb_seek_bar);
     }
 
     private void setListeners(){
         btnPlay.setOnClickListener(this);
         btnStop.setOnClickListener(this);
         btnReplay.setOnClickListener(this);
+
+        //2.给seekBar设置监听
+        sbSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+            }
+
+            //开始拖动时执行
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            //当停止拖动时执行
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                //设置播放位置
+                iService.callSeekToPosition(seekBar.getProgress());
+            }
+        });
     }
 
     @Override
