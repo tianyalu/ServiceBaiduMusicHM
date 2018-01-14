@@ -25,6 +25,7 @@ import java.util.TimerTask;
 public class MusicService extends Service {
     private MediaPlayer mediaPlayer;
     private String dataSourcePath;
+    private String dataSourceNetPath;
 
     //2.把定义的中间人对象返回
     @Nullable
@@ -38,6 +39,7 @@ public class MusicService extends Service {
     public void onCreate() {
         //[1]初始化MediaPlayer
         mediaPlayer = new MediaPlayer();
+        dataSourceNetPath = "http://192.168.1.8/newsServiceHM/media/bugua.mp3";   //播放网络音乐
         dataSourcePath = Environment.getExternalStorageDirectory().getPath() + File.separator
                 + "sty" + File.separator + "xpg.mp3";
         Log.i("Tag", "dataSourcePath:" + dataSourcePath);
@@ -79,8 +81,8 @@ public class MusicService extends Service {
         //(1)获取当前歌曲的总时长
         final int duration = mediaPlayer.getDuration();
         //(2)一秒钟获取一次当前进度
-        Timer timer = new Timer();
-        TimerTask task = new TimerTask() {
+        final Timer timer = new Timer();
+        final TimerTask task = new TimerTask() {
             @Override
             public void run() {
                 //(3)获取当前歌曲的进度
@@ -98,6 +100,15 @@ public class MusicService extends Service {
         };
         //300毫秒后每隔1秒钟获取一次当前歌曲的进度
         timer.schedule(task, 300, 1 * 1000);
+        //(3)当歌曲播放完成的时候 把timer和task取消
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                Log.i("Tag", "歌曲播放完成了");
+                timer.cancel();
+                task.cancel();
+            }
+        });
     }
 
     //音乐暂停了

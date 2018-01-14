@@ -33,4 +33,17 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"/>
 
+    <Button
+        android:id="@+id/btn_play_net_music"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="播放网络音乐" />
+
+    <Button
+        android:id="@+id/btn_stop_play_net_music"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="停止播放网络音乐" />
 </LinearLayout>
